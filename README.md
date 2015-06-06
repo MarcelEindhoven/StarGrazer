@@ -1,2 +1,0 @@
-# StarGrazer
-Web game development
