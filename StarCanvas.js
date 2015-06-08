@@ -15,17 +15,17 @@ var Star = function (position) {
 	this.position = position.clone();
 
 	this.draw = function() {
-		theCanvas = "canvas" + (10*this.position.y + this.position.x);
-		c = document.getElementById(theCanvas);
-		cxt = c.getContext("2d");
+		col = this.position.x;
+		row = this.position.y;
 
-		cxt.beginPath();
-		cxt.moveTo(10,10);
-		cxt.lineTo(40,40);
-		cxt.moveTo(40,10);
-		cxt.lineTo(10,40);
-		cxt.stroke();
-		cxt.closePath();
+		theCanvas = "canvas" + (10*col + row);
+		c = document.getElementById(theCanvas);
+		ctx = c.getContext("2d");
+
+		height = this.position.z;
+		size = 10 + 40 * height / nr_columns;
+		ctx.font = "bold " + size + "px Arial";
+		ctx.fillText("" + height, 25 - size/4, 25 + size/3);
 	}
 }
 
