@@ -33,7 +33,27 @@ var Star = function (position) {
 Star.stars_create=function(){
 	// first star in one corner
 	stars[0] = new Star(new Position(0, 0, 0));
+	stars[0].owner = "Jack";
 
 	// second star in opposite corner
 	stars[1] = new Star(new Position(nr_columns - 1, nr_columns - 1, nr_columns - 1));
+	stars[1].owner = "Jill";
+}
+
+// return undefined or the star at the input position
+Star.getStar = function(canvasNumber) {
+	var ret;
+
+	icol = canvasNumber % 10;
+	irow = (canvasNumber - icol)/10;
+
+	for(var s = 0;s < stars.length; s++) {
+		col = stars[s].position.x;
+		row = stars[s].position.y;
+		if ((row == irow) && (col == icol)) {
+			ret = stars[s];
+		}
+	}
+
+	return ret;
 }

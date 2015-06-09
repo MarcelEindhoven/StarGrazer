@@ -29,18 +29,26 @@ window.onload=function(){
 
 //Game methods
 function canvasClicked(canvasNumber){
-	if(squaresFilled==9){
+	var star = Star.getStar(canvasNumber);
+
+	if(undefined != star) {
+		star.owner = "Jack";
+	}
+
+	if(checkForWinners("Jack")){
 		alert("THE GAME IS OVER!");
 		location.reload(true);
 	}
-	
-	else{
-		alert("THAT SPACE IS ALREADY OCCUPIED WITH YOUR HEART!");
-	}
-
 }
 
 function checkForWinners(symbol){
+	var winner = true;
+	for(var s = 0;s < stars.length; s++) {
+		if (stars[s].owner != symbol) {
+			winner = false;
+		}
+	}
+	return winner;
 }
 
 function playAgain(){
