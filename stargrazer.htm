@@ -2,29 +2,19 @@
 <html>  
      <head>  
 	<link rel="stylesheet" type="text/css" href="tictactoe.css"/> 
-	<script src="StarCanvas.js"></script>
+	<script src="Star.js"></script>
 	<script type="text/javascript">  
 //Global Variables
 var nr_columns = 3;
-var nr_stars = 2;
-var painted;
-var content;
-var winningCombinations;
-var turn = 0;
-var theCanvas;
-var c;
-var cxt;
-var squaresFilled = 0;
-var w;
-var y;
+var month = 0;
+var currentPlayer = 0;
+var from = undefined;
+var to = undefined;
 
 //Instanciate Arrays
 window.onload=function(){
 	Star.stars_create();
-
-	for(var s = 0;s < stars.length; s++) {
-		stars[s].draw();
-	}
+	Star.setCurrentPlayer();
 }
 
 //Game methods
@@ -32,12 +22,21 @@ function canvasClicked(canvasNumber){
 	var star = Star.getStar(canvasNumber);
 
 	if(undefined != star) {
-		star.owner = "Jack";
+		if (undefined != from) {
+			to = star;
+			t = document.getElementById("to");
+			t.value = star.name;
+		}
+		else {
+			from = star;
+			t = document.getElementById("from");
+			t.value = star.name;
+		}
 	}
-
-	if(checkForWinners("Jack")){
-		alert("THE GAME IS OVER!");
-		location.reload(true);
+	else {
+		from = undefined;
+		t = document.getElementById("from");
+		t.value = "";
 	}
 }
 
@@ -59,13 +58,39 @@ function playAgain(){
 	}
 	else{
 		alert("SO LONG,SUCKER!");
+		}
 }
 
+function cancel() {
+	t = document.getElementById("f");
+	t.value = "B";
 }
+
+function send() {
+	if ((undefined != from) && (undefined != to)) {
+		to.owner = from.owner;
+	}
+
+	if(checkForWinners(currentPlayer)){
+		var id = "player" + currentPlayer;
+		t = document.getElementById(id);
+		var name = t.value;
+		alert("THE GAME IS OVER! " + name + " has won");
+		location.reload(true);
+	}
+}
+
+function setPlayer(id) {
+	currentPlayer = id;
+	Star.setCurrentPlayer();
+}
+
     </script> 
      </head>  
      <body>  
 	 <h1>Stargrazer</h1>
+	<button onclick="setPlayer(1)">I am player 1</button>
+	<br>
 	<canvas id = "canvas0"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(00)"></canvas>
 	<canvas id = "canvas1"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(01)"></canvas>
 	<canvas id = "canvas2"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(02)"></canvas>
@@ -77,5 +102,17 @@ function playAgain(){
 	<canvas id = "canvas20"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(20)"></canvas>
 	<canvas id = "canvas21"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(21)"></canvas>
 	<canvas id = "canvas22"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(22)"></canvas>
+	<br>
+	<button onclick="send()">Send</button><input type="number" id="ships" value=1/> ships from 
+	<input type="text" id="from" value="" readonly/> to 
+	<input type="text" id="to" value="" readonly/>
+	<button onclick="cancel()">Cancel</button>
+	<br>
+	<label>Player 1 </label><input type="text" id="player1" value="Jack"/>
+	<br>
+	<label>Player 2 </label><input type="text" id="player2" value="Jill"/>
+	<br>
+	<button onclick="setPlayer(2)">I am player 2</button>
+	<p id="f">A</p>
 	</body>
 </html> 
