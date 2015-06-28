@@ -3,41 +3,80 @@
      <head>  
 	<link rel="stylesheet" type="text/css" href="tictactoe.css"/> 
 	<script src="Star.js"></script>
+	<script src="Player.js"></script>
 	<script type="text/javascript">  
 //Global Variables
 var nr_columns = 3;
 var month = 0;
-var currentPlayer = 0;
 var from = undefined;
 var to = undefined;
 
 //Instanciate Arrays
 window.onload=function(){
+	// create universe
 	Star.stars_create();
-	Star.setCurrentPlayer();
+	// set current player to undefined
+	Player.reset();
+	// 2 players
+	Player.players_create(2);
+	Star.set_players(players.length);
+	reset();
 }
 
+function reset() {
+	Player.reset();
+	from = undefined;
+	to = undefined;
+	document.getElementById("from").value = "";
+	document.getElementById("to").value = "";
+	document.getElementById("ships").value = "1";
+	document.getElementById("events").value = "";
+
+	// no secret info will be shown
+	Star.setCurrentPlayer();
+	updateSendButton();
+}
+
+function setFrom(f) {
+	from = f;
+	if (undefined == from) {
+		reset();
+	}
+	else {
+		document.getElementById("from").value = from.name;
+	}
+}
 //Game methods
 function canvasClicked(canvasNumber){
+	// retrieve star located in clicked canvas
 	var star = Star.getStar(canvasNumber);
 
 	if(undefined != star) {
 		if (undefined != from) {
-			to = star;
-			t = document.getElementById("to");
-			t.value = star.name;
+			// from already filled in
+			if (star.name == from.name) {
+	console.log("reset because " + from.name + " equals " + star.name);
+				// clicked canvas equals from, reset
+				reset();
+			} else {
+				to = star;
+				document.getElementById("to").value = star.name;
+			}
 		}
 		else {
-			from = star;
-			t = document.getElementById("from");
-			t.value = star.name;
+			if (star.owner == currentPlayer) {
+				console.log("set from");
+				setFrom(star);
+			}
 		}
 	}
 	else {
-		from = undefined;
-		t = document.getElementById("from");
-		t.value = "";
+		// clicked canvas is empty, reset all screen info
+		console.log("reset because empty canvas clicked");
+		reset();
 	}
+
+	updateSendButton();
 }
 
 function checkForWinners(symbol){
@@ -66,6 +105,14 @@ function cancel() {
 	t.value = "B";
 }
 
+function updateSendButton() {
+	if ((undefined != from) && (undefined != to)){
+		document.getElementById("send").disabled = false;
+	} else {
+		document.getElementById("send").disabled = true;
+	}
+	// document.getElementById("events").value = "test\ntest";
+}
 function send() {
 	if ((undefined != from) && (undefined != to)) {
 		to.owner = from.owner;
@@ -83,12 +130,20 @@ function send() {
 function setPlayer(id) {
 	currentPlayer = id;
 	Star.setCurrentPlayer();
+
+	updateSendButton();
 }
 
     </script> 
      </head>  
      <body>  
-	 <h1>Stargrazer</h1>
+	 <h1>Stargrazer</h1
+	 <table>
+	 <td>
+	 <textarea rows="9" cols="50" id="events" readonly>
+	 </textarea>
+	 </td>
+	 <td>
 	<button onclick="setPlayer(1)">I am player 1</button>
 	<br>
 	<canvas id = "canvas0"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(00)"></canvas>
@@ -103,15 +158,17 @@ function setPlayer(id) {
 	<canvas id = "canvas21"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(21)"></canvas>
 	<canvas id = "canvas22"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(22)"></canvas>
 	<br>
-	<button onclick="send()">Send</button><input type="number" id="ships" value=1/> ships from 
-	<input type="text" id="from" value="" readonly/> to 
-	<input type="text" id="to" value="" readonly/>
+	<button onclick="send()" id = "send">Send</button><input type="number" name="ships" id="ships" min="1" max ="999" value="1"/> ships from 
+	<input type="text" name="from" id="from" size="9" value="" readonly/> to 
+	<input type="text" name="to" id="to" size="9" value="" readonly/>
 	<button onclick="cancel()">Cancel</button>
 	<br>
 	<label>Player 1 </label><input type="text" id="player1" value="Jack"/>
 	<br>
 	<label>Player 2 </label><input type="text" id="player2" value="Jill"/>
 	<br>
+	</td>
+	</table>
 	<button onclick="setPlayer(2)">I am player 2</button>
 	<p id="f">A</p>
 	</body>

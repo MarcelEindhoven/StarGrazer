@@ -2,7 +2,10 @@
 var stars   = new Array();
 var names = [
 	"Aldran",
-	"Beor"
+	"Beor",
+	"Castor",
+	"Diran",
+	"Echo"
 ];
 
 var Position = function(xin, yin, zin) {
@@ -38,26 +41,42 @@ var Star = function (position) {
 		size = 10 + 30 * height / nr_columns;
 		context.font = "bold " + size + "px Arial";
 		context.fillStyle="#000000";
-		context.fillText("" + this.name.charAt(0), 25 - size/4, 25 - size/40);
+		var top = "" + this.name.charAt(0);
+		if (currentPlayer == this.owner) {
+			top = top + this.production;
+		}
+		context.fillText(top, 25 - size/2, 25 - size/40);
 		if (currentPlayer == this.owner) {
 			context.fillText("" + this.currentShips, 25 - size/4, 25 + size*0.8);
 		}
 	}
+
 }
 
 	// global function that initializes stars[]
 Star.stars_create=function(){
 	// first star in one corner
 	stars[0] = new Star(new Position(0, 0, 0));
-	stars[0].owner = 1;
 
 	// second star in opposite corner
 	stars[1] = new Star(new Position(nr_columns - 1, nr_columns - 1, nr_columns - 1));
-	stars[1].owner = 2;
+
+	// third star neutral
+	stars[2] = new Star(new Position(1, 1, 1));
 
 	for(var s = 0;s < stars.length; s++) {
 		stars[s].name = names[s];
-		stars[s].currentShips = 22;
+		stars[s].owner = 0;
+		stars[s].currentShips = 5;
+		stars[s].production = 2;
+	}
+}
+
+Star.set_players=function(n_players){
+	for(var p = 1; p < n_players; p++) {
+		stars[p-1].owner = p;
+		stars[p-1].currentShips = 15;
+		stars[p-1].production = 5;
 	}
 }
 
