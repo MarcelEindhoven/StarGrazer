@@ -35,6 +35,7 @@ function reset() {
 	// no secret info will be shown
 	Star.setCurrentPlayer();
 	updateSendButton();
+	document.getElementById("events").value = "";
 }
 
 function setFrom(f) {
@@ -46,12 +47,29 @@ function setFrom(f) {
 		document.getElementById("from").value = from.name;
 	}
 }
+
+function updateStatus(star) {
+	var nearest = Star.nearestStars(star);
+	var status = "Name Distance";
+	if (currentPlayer != -1) {
+		status = status + " + Ships";
+	}
+	
+	for(var s = 0;s < stars.length; s++) {
+		status = status + "\n" + nearest[s].status(star);
+	}
+	document.getElementById("events").value = status;
+}
+
 //Game methods
 function canvasClicked(canvasNumber){
 	// retrieve star located in clicked canvas
 	var star = Star.getStar(canvasNumber);
 
 	if(undefined != star) {
+		// give info with this star as center
+		updateStatus(star);
+
 		if (undefined != from) {
 			// from already filled in
 			if (star.name == from.name) {
@@ -128,6 +146,7 @@ function send() {
 }
 
 function setPlayer(id) {
+	reset();
 	currentPlayer = id;
 	Star.setCurrentPlayer();
 

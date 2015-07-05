@@ -8,6 +8,16 @@ var names = [
 	"Echo"
 ];
 
+// make text fixed length
+var pad = function(text, length) {
+	var t = text;
+	while (t.length < length) {
+		t = t + " ";
+	}
+	return t;
+}
+
+// 3D position
 var Position = function(xin, yin, zin) {
 	this.x = xin;
 	this.y = yin;
@@ -16,8 +26,29 @@ var Position = function(xin, yin, zin) {
 	this.clone = function() {
 		return new Position(this.x, this.y, this.z);
 	}
+
+	// return distance in lightyears
+	this.distance = function(other) {
+		return Math.sqrt(Math.pow(this.x - other.x,2) + Math.pow(this.y - other.y,2) + Math.pow(this.z - other.z,2));
+	}
 };
 
+Position.distanceToText = function(distance) {
+	console.log(distance);
+	var months = Math.round(distance * 12);
+	var years = Math.floor(months / 12);
+	months = months - years * 12;
+	var text = "";
+	if (years > 0) {
+		text = text + years + "y";
+		if (months > 0) {
+			text = text + months + "m";
+		}
+	} else {
+		text = "----";
+	}
+	return text;
+}
 
 var Star = function (position) {
 	this.position = position.clone();
@@ -50,8 +81,24 @@ var Star = function (position) {
 			context.fillText("" + this.currentShips, 25 - size/4, 25 + size*0.8);
 		}
 	}
+	// give status of star as a string from point of view current player
+	this.status = function(center) {
+		// name
+		var status = pad(this.name, Star.maxNameLength + 1);
+		// distance
+		status = status + pad(Position.distanceToText(this.position.distance(center.position)), 6);
+		// growth
+		if (this.owner == currentPlayer) {
+			status = status + this.production;
+			status = status + " " + this.currentShips;
+		}
+		return status;
+	}
 
 }
+
+// length of biggest star name
+Star.maxNameLength = 7;
 
 	// global function that initializes stars[]
 Star.stars_create=function(){
@@ -104,3 +151,14 @@ Star.setCurrentPlayer = function() {
 		stars[s].draw();
 	}
 }
+
+Star.nearestStars = function(center) {
+	var nearest = new Array();
+	// first put all stars in output array
+	for(var s = 0;s < stars.length; s++) {
+		nearest[s] = stars[s];
+	}
+	// now sort
+	return nearest;
+}
+
