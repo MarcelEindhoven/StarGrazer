@@ -2,193 +2,45 @@
 <html>  
      <head>  
 	<link rel="stylesheet" type="text/css" href="tictactoe.css"/> 
-	<script src="Star.js"></script>
-	<script src="Player.js"></script>
 	<script type="text/javascript">  
 //Global Variables
 var nr_columns = 3;
-var month = 0;
 var from = undefined;
 var to = undefined;
 
 //Instanciate Arrays
 window.onload=function(){
-	// create universe
-	Star.stars_create();
-	// set current player to undefined
-	Player.reset();
-	// 2 players
-	Player.players_create(2);
-	Star.set_players(players.length);
-	reset();
+    console.log("during onload");
+    //window.open("./stargrazer_2.htm");
 }
 
-function reset() {
-	Player.reset();
-	from = undefined;
-	to = undefined;
-	document.getElementById("from").value = "";
-	document.getElementById("to").value = "";
-	document.getElementById("ships").value = "1";
-	document.getElementById("events").value = "";
-
-	// no secret info will be shown
-	Star.setCurrentPlayer();
-	updateSendButton();
-	document.getElementById("events").value = "";
+function start_button(){
+    console.log("during start");
+    window.open("./stargrazer_2.htm");
 }
-
-function setFrom(f) {
-	from = f;
-	if (undefined == from) {
-		reset();
-	}
-	else {
-		document.getElementById("from").value = from.name;
-	}
-}
-
-function updateStatus(star) {
-	var nearest = Star.nearestStars(star);
-	var status = "Name Distance";
-	if (currentPlayer != -1) {
-		status = status + " + Ships";
-	}
-	
-	for(var s = 0;s < stars.length; s++) {
-		status = status + "\n" + nearest[s].status(star);
-	}
-	document.getElementById("events").value = status;
-}
-
-//Game methods
-function canvasClicked(canvasNumber){
-	// retrieve star located in clicked canvas
-	var star = Star.getStar(canvasNumber);
-
-	if(undefined != star) {
-		// give info with this star as center
-		updateStatus(star);
-
-		if (undefined != from) {
-			// from already filled in
-			if (star.name == from.name) {
-	console.log("reset because " + from.name + " equals " + star.name);
-				// clicked canvas equals from, reset
-				reset();
-			} else {
-				to = star;
-				document.getElementById("to").value = star.name;
-			}
-		}
-		else {
-			if (star.owner == currentPlayer) {
-				console.log("set from");
-				setFrom(star);
-			}
-		}
-	}
-	else {
-		// clicked canvas is empty, reset all screen info
-		console.log("reset because empty canvas clicked");
-		reset();
-	}
-
-	updateSendButton();
-}
-
-function checkForWinners(symbol){
-	var winner = true;
-	for(var s = 0;s < stars.length; s++) {
-		if (stars[s].owner != symbol) {
-			winner = false;
-		}
-	}
-	return winner;
-}
-
-function playAgain(){
-	y=confirm("PLAY AGAIN?");
-	if(y==true){
-		alert("OKAY! ^^/>");
-		location.reload(true);
-	}
-	else{
-		alert("SO LONG,SUCKER!");
-		}
-}
-
-function cancel() {
-	t = document.getElementById("f");
-	t.value = "B";
-}
-
-function updateSendButton() {
-	if ((undefined != from) && (undefined != to)){
-		document.getElementById("send").disabled = false;
-	} else {
-		document.getElementById("send").disabled = true;
-	}
-	// document.getElementById("events").value = "test\ntest";
-}
-function send() {
-	if ((undefined != from) && (undefined != to)) {
-		to.owner = from.owner;
-	}
-
-	if(checkForWinners(currentPlayer)){
-		var id = "player" + currentPlayer;
-		t = document.getElementById(id);
-		var name = t.value;
-		alert("THE GAME IS OVER! " + name + " has won");
-		location.reload(true);
-	}
-}
-
-function setPlayer(id) {
-	reset();
-	currentPlayer = id;
-	Star.setCurrentPlayer();
-
-	updateSendButton();
-}
-
     </script> 
      </head>  
      <body>  
-	 <h1>Stargrazer</h1
+	 <h1>Stargrazer</h1>
+	 <form type="link" action="stargrazer_2.htm">
 	 <table>
 	 <td>
-	 <textarea rows="9" cols="50" id="events" readonly>
-	 </textarea>
-	 </td>
-	 <td>
-	<button onclick="setPlayer(1)">I am player 1</button>
-	<br>
-	<canvas id = "canvas0"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(00)"></canvas>
-	<canvas id = "canvas1"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(01)"></canvas>
-	<canvas id = "canvas2"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(02)"></canvas>
-	<br>
-	<canvas id = "canvas10"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(10)"></canvas>
-	<canvas id = "canvas11"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(11)"></canvas>
-	<canvas id = "canvas12"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(12)"></canvas>
-	<br>
-	<canvas id = "canvas20"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(20)"></canvas>
-	<canvas id = "canvas21"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(21)"></canvas>
-	<canvas id = "canvas22"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(22)"></canvas>
-	<br>
-	<button onclick="send()" id = "send">Send</button><input type="number" name="ships" id="ships" min="1" max ="999" value="1"/> ships from 
-	<input type="text" name="from" id="from" size="9" value="" readonly/> to 
-	<input type="text" name="to" id="to" size="9" value="" readonly/>
-	<button onclick="cancel()">Cancel</button>
-	<br>
 	<label>Player 1 </label><input type="text" id="player1" value="Jack"/>
 	<br>
 	<label>Player 2 </label><input type="text" id="player2" value="Jill"/>
 	<br>
 	</td>
+	<tr>
+	<td><input type"submit" value="Start StarGrazer game"/></td>
+	</tr>
 	</table>
-	<button onclick="setPlayer(2)">I am player 2</button>
-	<p id="f">A</p>
+	<button onclick="start_button(2)">Start 2 player game</button>
+	</form>
+	<h6>Feature Portal</h6>
+	<h7>Player: A player is a participant in a game.</h7>
+	<h7>Portal: A portal is an entry page to enter player attributes and to start a game.</h7>
+	<h8>To save space on the main game page, player attributes are entered in the portal instead of the game page<h8>
+	Two technologies are known to pass information between pages: form entries and cookies.
+	Player attributes do not change once the game has started.
 	</body>
 </html> 
