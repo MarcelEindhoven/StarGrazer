@@ -11,14 +11,17 @@ body{
      height:auto;  
         
  }  
-    
+
+ h7{    
+     position:relative;  
+ }  
+ 
  h3{  
     
      position:relative;  
      -webkit-animation:h3Animation 2s;   
-        
  }  
-    
+
  h1{  
     
      position:relative;  

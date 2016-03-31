@@ -12,6 +12,23 @@ var nr_columns = 3;
 var from = undefined;
 var to = undefined;
 
+// retrieve cookie text if available
+function getCookieValue(id) {
+   // split cookie into elements
+   var elements = document.cookie.split(';');
+   var result = "";
+   for (var i=0; i<elements.length; i++) {
+      var e = elements[i];
+	  // remove leading whitespace
+	  while (e.charAt(0) == ' ') e = e.substring(1);
+	  // check if cookie element starts with id=
+	  if (e.indexOf(id+"=") == 0) {
+	     result = e.substring(id.length+2, e.length);
+	  }
+   }
+   return result;
+}
+
 //Instanciate Arrays
 window.onload=function(){
 	// create universe
@@ -20,6 +37,11 @@ window.onload=function(){
 	Player.playersCreate(2);
 	// set current player to undefined
 	setPlayer(-1);
+	players[0].name = "Neutral";
+	players[1].name = getCookieValue("player1");
+	players[2].name = getCookieValue("player2");
+	document.getElementById("button_player1").textContent = "I am " + players[1].name;
+	document.getElementById("button_player2").firstChild.data = "I am " + players[2].name;
 }
 
 // reset screen
@@ -46,7 +68,7 @@ function setFrom(f) {
 }
 
 function updateStatus(star) {
-	var status = "Name Distance";
+	var status = "Information on " + star.name + " and its neighbours\nName Distance";
 	if (currentPlayer != -1) {
 		status = status + " + Ships";
 	}
@@ -58,14 +80,22 @@ function updateStatus(star) {
 }
 
 function updateEvents() {
+	var text = "";
 	if (currentPlayer > 0) {
 		var events = players[currentPlayer].visibleEvents();
-		var text = "Events visible to current player";
-		for (var e=0; e < events.length; e++) {
-			text = text + "\n" + events[e].text;
+		if (events.length > 0) {
+			text = "Events visible to you";
+			for (var e=0; e < events.length; e++) {
+				text = text + "\n" + events[e].text;
+			}
+		} else {
+			text = "Each turn send exactly one fleet one its way\n";
+			text = text + "Click on your own star (green), click on a destination and select the fleet size\n";
 		}
-		document.getElementById("events").value = text;
+	} else {
+		text = "Press your own button to start your turn";
 	}
+	document.getElementById("events").value = text;
 }
 
 //Game methods
@@ -126,8 +156,6 @@ function playAgain(){
 }
 
 function cancel() {
-	t = document.getElementById("f");
-	t.value = "B";
 }
 
 function updateSendButton() {
@@ -141,10 +169,15 @@ function updateSendButton() {
 
 // give the order to send ships
 function send() {
-	var e = new DepartureEvent(players[currentPlayer].time, from, to, document.getElementById("ships").value );
+	var e = new DepartureEvent(players[currentPlayer].time, from, to, parseInt(document.getElementById("ships").value) );
 	players[currentPlayer].increaseTime();
-	// to do: check if current player should continue
+	// check if current player should continue
+	if (!players[currentPlayer].turnAllowed()) {
+		currentPlayer = -1;
+	}
 	updateEvents();
+	// update which players are allowed to continue their turn
+	Player.turnAllowedButtons();
 
 	if(checkForWinners(currentPlayer)){
 		var id = "player" + currentPlayer;
@@ -153,7 +186,7 @@ function send() {
 		alert("THE GAME IS OVER! " + name + " has won");
 		location.reload(true);
 	} else {
-			Star.setCurrentPlayer(currentPlayer);
+		Star.setCurrentPlayer(currentPlayer);
 	}
 }
 
@@ -162,7 +195,12 @@ function setPlayer(id) {
 	// reset screen
 	reset();
 	// set current player, may be undefined
-	currentPlayer = id;
+	if (currentPlayer == id) {
+		// current player presses his own button, stop his turn
+		currentPlayer = -1;
+	} else {
+		currentPlayer = id;
+	}
 	if (id >=0 ) {
 		var currentTime = players[currentPlayer].time;
 	} else {
@@ -178,13 +216,34 @@ function setPlayer(id) {
      </head>  
      <body>  
 	 <h1>Stargrazer</h1
+	 <table class="w3-table-all" style="width:100%" align="left">
+	 <tr align="left">
+		<th>Player</th>
+		<th>Year</th>
+	 </tr><br>
+	 <tr align="left">
+	 <td>
+	<button id = "button_player1" onclick="setPlayer(1)">I am player 1</button>
+	 </td>
+	 <td>
+	<input type="text" id="year1" size="4" value="" readonly/>
+	</td>
+	</tr><br>
+	 <tr>
+	 <td>
+	<button id = "button_player2" onclick="setPlayer(2)">I am player 2</button>
+	 </td>
+	 <td>
+	<input type="text" id="year2" size="4" value="" readonly/>
+	</td>
+	</tr>
+	</table>
 	 <table>
 	 <td>
-	 <textarea rows="9" cols="50" id="events" readonly>
+	 <textarea rows="9" cols="90" id="events" readonly>
 	 </textarea>
 	 </td>
 	 <td>
-	<button onclick="setPlayer(1)">I am player 1</button>
 	<br>
 	<canvas id = "canvas0"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(00)"></canvas>
 	<canvas id = "canvas1"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(01)"></canvas>
@@ -203,13 +262,7 @@ function setPlayer(id) {
 	<input type="text" name="to" id="to" size="9" value="" readonly/>
 	<button onclick="cancel()">Cancel</button>
 	<br>
-	<label>Player 1 </label><input type="text" id="player1" value="Jack"/>
-	<br>
-	<label>Player 2 </label><input type="text" id="player2" value="Jill"/>
-	<br>
 	</td>
 	</table>
-	<button onclick="setPlayer(2)">I am player 2</button>
-	<p id="f">A</p>
 	</body>
 </html> 

@@ -21,20 +21,20 @@ var Star = function (position) {
 	this.position = position.clone();
 	// events array is always sorted on time
 	this.events = new Array();
-	// event always starts as future event
+	// add event and sort on time
 	this.addEvent = function(e) {
 		console.log("Event added " + e.text);
 		this.events.push(e);
 		// events array is always sorted on time
 		this.events.sort(function(a, b) {return a.time - b.time;});
 	}
-	// current player moves forward in time
+	// current player may move forward in time
 	// activate events up to time visible from headquarter, 
 	// return visible events
 	this.visibleEvents = function(player, headquarter, previous, current) {
 		// determine time of star as seen from headquarter
 		var event_horizon = current - this.distance(headquarter);
-		console.log("events up to time " + event_horizon);
+		console.log("The following events are visible for " + this.name + " up to time " + event_horizon);
 		// to do: keep future events up to date with pirate events
 		// future events that become visible take place now
 		this.events.filter(function(event) {
@@ -49,12 +49,11 @@ var Star = function (position) {
 		return this.events.filter(function(event) {
 			//restore state of star stored in event if event within event horizon
 			if (event.time < event_horizon) {
-				this.owner = event.owner;
-				this.ships = event.ships;
+				event.reactivate();
 			}
 			// if event is not initial and within event horizon and 
 			// within requested period and visible to current player
-			console.log("Event time " + event.time + " owner " + this.owner + " ships " + this.ships);
+			console.log("Event time " + event.time + " owner " + event.owner + " ships " + event.ships + " " + event.text);
 			return ((event.time >= 0) 
 				&& (event.time >= requested_start_time)
 				&& (event.time < event_horizon) 
@@ -109,7 +108,7 @@ var Star = function (position) {
 		}
 	}
 
-	// give status of star as a string from point of view current player
+	// give	status of star as a string from point of view current player
 	this.status = function(center, current_player) {
 		// name
 		var status = pad(this.name, Star.maxNameLength + 1);
@@ -130,8 +129,6 @@ var Star = function (position) {
 		// initial fleet for real player
 		// events with negative time are invisible
 		var e = new ArrivalEvent(-0.00001, this, 15, id);
-		// restore growth event
-		e = new GrowthEvent(0.99999, this);
 	}
 
 	// return sorted list of nearest stars up to 3 lightyears
@@ -146,9 +143,12 @@ var Star = function (position) {
 			return a.value - b.value;
 		});
 		return mapped.map(function(el) {
-			console.log("Sorted element index " + el.index + " distanceSquare " + el.value);
 			return stars[el.index];
 		});
+	}
+	
+	// set state of star to current player
+	this.setPlayer = function(player) {
 	}
 }
 
@@ -210,6 +210,9 @@ Star.getStar = function(canvasNumber) {
 // draw stars with info known to current player
 Star.setCurrentPlayer = function(current_player) {
 	for(var s = 0;s < stars.length; s++) {
+		if (current_player > 0) {
+			stars[s].setPlayer(players[current_player]);
+		}
 		// set status of star as seen from player
 		stars[s].draw(current_player);
 	}

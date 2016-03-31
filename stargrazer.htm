@@ -8,15 +8,52 @@ var nr_columns = 3;
 var from = undefined;
 var to = undefined;
 
-//Instanciate Arrays
+// retrieve cookie text if available
+function getCookieValue(id) {
+   // split cookie into elements
+   var elements = document.cookie.split(';');
+   var result = "";
+   for (var i=0; i<elements.length; i++) {
+      var e = elements[i];
+	  // remove leading whitespace
+	  while (e.charAt(0) == ' ') e = e.substring(1);
+	  // check if cookie element starts with id=
+	  if (e.indexOf(id+"=") == 0) {
+	     result = e.substring(id.length+2, e.length);
+	  }
+   }
+   return result;
+}
+
+function expiresString(days){
+   var d = new Date();
+   // expires after one day
+   d.setTime(d.getTime() + days*24*60*60*1000);
+   return "expires=" + d.toUTCString();
+}
+
+function setCookie(id, value) {
+   // delete previous cookie, not really necessary
+   document.cookie=id+"=;"+"path=/"
+			   +";"+expiresString(-1000);
+   // expiration date of 1 day
+   document.cookie=id + "=" + value
+			   +";"+"path=/"
+			   +";"+expiresString(1);
+}
+
+//Instanciate fields
 window.onload=function(){
-    console.log("during onload");
+	console.log("cookie = " + document.cookie);
+	document.getElementById("player1").value = getCookieValue("player1");
+	document.getElementById("player2").value = getCookieValue("player2");
     //window.open("./stargrazer_2.htm");
 }
 
 function start_button(){
-    console.log("during start");
-    window.open("./stargrazer_2.htm");
+   setCookie("player1=", document.getElementById("player1").value);
+   setCookie("player2=", document.getElementById("player2").value);
+//    window.open("./stargrazer_2.htm");
 }
     </script> 
      </head>  
@@ -36,10 +73,10 @@ function start_button(){
 	</table>
 	<button onclick="start_button(2)">Start 2 player game</button>
 	</form>
-	<h6>Feature Portal</h6>
-	<h7>Player: A player is a participant in a game.</h7>
-	<h7>Portal: A portal is an entry page to enter player attributes and to start a game.</h7>
-	<h8>To save space on the main game page, player attributes are entered in the portal instead of the game page<h8>
+	<h4>Feature Portal</h4>
+	<h5>Player: A player is a participant in a game.</h5>
+	<h5>Portal: A portal is an entry page to enter player attributes and to start a game.</h5>
+	<h6>To save space on the main game page, player attributes are entered in the portal instead of the game page<h6>
 	Two technologies are known to pass information between pages: form entries and cookies.
 	Player attributes do not change once the game has started.
 	</body>

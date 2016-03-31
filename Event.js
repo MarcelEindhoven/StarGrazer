@@ -27,14 +27,15 @@ var Event = function(t, s, txt, ships) {
 	// restore state of star when event occurred
 	this.reactivate = function() {
 		// this.occurred == true
-		this.star.owner = this.owner;
-		this.star.ships = this.ships;
+		this.star.owner = + this.owner;
+		this.star.ships = + this.ships;
+		console.log("Set star state " + this.star.name + " owner " + this.owner + " ships " + this.ships);
 	}
 	// save state of star when event occurs
 	this.freeze = function() {
 		this.owner = this.star.owner;
 		this.ships = this.star.ships;
-		console.log("Set event state " + this.star.name + " owner " + this.owner + " ships " + this.ships);
+		console.log("Freeze event state " + this.star.name + " owner " + this.owner + " ships " + this.ships);
 	}
 	// event always belongs to affected star
 	this.star.addEvent(this);
@@ -45,7 +46,7 @@ var GrowthEvent = function(t, s) {
 	var e = new Event(t, s, "", s.production);
 	e.activate = function() {
 		this.activated = true;
-		this.star.ships = this.star.ships + this.star.production;
+		this.star.ships = + this.star.ships + this.star.production;
 		this.freeze();
 		var g = new GrowthEvent(this.time + 1, this.star);
 	}
@@ -62,12 +63,12 @@ var ArrivalEvent = function(t, s, ships, owner) {
 		this.activated = true;
 		if (this.time < 0) {
 			// initialization
-			this.star.ships = this.ships;
+			this.star.ships = + this.ships;
 			this.star.owner = this.owner;
 			this.text = "Initialization";
 		} else if (this.star.owner == this.owner) {
-			// reinforcements
-			this.star.ships = this.star.ships + this.ships;
+			// reinforcements, convert always to a number
+			this.star.ships = + this.star.ships + this.ships;
 			this.text = this.star.name + " reinforced with " + this.ships + " ships";
 		} else {
 			// battle
@@ -78,21 +79,22 @@ var ArrivalEvent = function(t, s, ships, owner) {
 				// battle between 2 real players
 				this.visibleTo[1] = this.star.owner;
 			}
-			var initial = this.star.ships;
-			var attack = this.ships;
+			var initial = + this.star.ships;
+			var attack = + this.ships;
+			var defender = this.star.owner;
 			while ((this.star.ships > 0) && (this.ships > 0)) {
 				// first strike defender
 				var loss = Math.ceil(this.star.ships/2);
 				if (loss > this.ships) {
 					loss = this.ships;
 				}
-				this.ships = this.ships - loss;
+				this.ships = + this.ships - loss;
 				// revenge
 				loss = Math.ceil(this.ships/2);
 				if (loss > this.star.ships) {
 					loss = this.star.ships;
 				}
-				this.star.ships = this.star.ships - loss;
+				this.star.ships = + this.star.ships - loss;
 			}
 			if (this.ships > 0) {
 				// attacker has won
@@ -100,7 +102,11 @@ var ArrivalEvent = function(t, s, ships, owner) {
 				this.star.ships = this.ships;
 			} else {
 			}
-			this.text = this.star.name + " " + initial + " ships attacked by " + attack +" battle won by " + this.star.owner + "  " + (initial + attack - this.star.ships) + " ships remaining";
+			this.text = this.star.name + " owned by " + players[defender].name
+							+ "  " + initial + " ships attacked by " + attack +
+							" ships from " + players[this.owner].name +
+							" battle won by " + players[this.star.owner].name +
+							"  " + this.star.ships + " ships remaining";
 		}
 
 		this.freeze();
@@ -111,12 +117,11 @@ var ArrivalEvent = function(t, s, ships, owner) {
 // order to depart plus actual departure
 var DepartureEvent = function(t, from, to, ships) {
 	var e = new Event(t, from, "Departure ordered from " + from.name + " to " + to.name + " " + ships + " ships", ships);
-	console.log("text " + e.text);
 
 	e.visibleTo[0] = from.owner;
 	e.from = from;
 	e.to = to;
-	e.ships = ships;
+	e.ships = + ships;
 
 	e.activate = function() {
 		this.activated = true;
@@ -126,13 +131,14 @@ var DepartureEvent = function(t, from, to, ships) {
 		}
 		else {
 			// ships will leave
-			var d = this.ships;
+			var d = + this.ships;
+			console.log("ships ordered to leave = " + d + ", this.star.ships =", this.star.ships);
 			// max nr of ships on star
 			if (d > this.star.ships) {
-				d = this.star.ships;
+				d = + this.star.ships;
 			}
 			this.text = "" + d + " ships are leaving " + this.star.name + " for " + this.to.name;
-			this.star.ships = this.star.ships - d;
+			this.star.ships = + Number(this.star.ships) - Number(d);
 			var a = new ArrivalEvent(this.time + this.star.distance(this.to), this.to, d, this.owner);
 			// to do: destroy some ships if journey is too long
 		}
