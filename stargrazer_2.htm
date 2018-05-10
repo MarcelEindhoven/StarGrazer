@@ -119,7 +119,7 @@ function canvasClicked(canvasNumber){
 			}
 		}
 		else {
-			if (star.owner == currentPlayer) {
+			if (star.ownerID == currentPlayer) {
 				console.log("set from");
 				setFrom(star);
 			}
@@ -134,10 +134,30 @@ function canvasClicked(canvasNumber){
 	updateSendButton();
 }
 
+function fromList() {
+	setFrom(Star.getStarByName(
+		document.getElementById("fromList").textContent
+	));
+}
+
+function fillFromList() {
+	// fill from list with stars controlled by current player
+	var list = document.getElementById("fromList");
+	Star.controlledStars(currentPlayer).forEach(function(star) {
+		var option = document.createElement("option");
+		option.text = star.name;
+		list.add(option);
+	});
+	// if player controls only one star, select that star as from
+	if (1 == list.options.length) {
+		fromList();
+	}
+}
+
 function checkForWinners(symbol){
 	var winner = true;
 	for(var s = 0;s < stars.length; s++) {
-		if (stars[s].owner != symbol) {
+		if (stars[s].ownerID != symbol) {
 			winner = false;
 		}
 	}
@@ -210,40 +230,37 @@ function setPlayer(id) {
 	updateSendButton();
 	updateEvents();
 	Star.setCurrentPlayer(currentPlayer);
+	fillFromList();
 }
 
     </script> 
      </head>  
-     <body>  
-	 <h1>Stargrazer</h1
-	 <table class="w3-table-all" style="width:100%" align="left">
-	 <tr align="left">
+ <body>  
+ <h1>Stargrazer</h1
+  <table class="w3-table-all" style="width:100%" align="left">
+   <tr align="left">
 		<th>Player</th>
 		<th>Year</th>
-	 </tr><br>
-	 <tr align="left">
-	 <td>
-	<button id = "button_player1" onclick="setPlayer(1)">I am player 1</button>
-	 </td>
-	 <td>
-	<input type="text" id="year1" size="4" value="" readonly/>
+   </tr><br>
+   <tr align="left">
+    <td>
+	 <button id = "button_player1" onclick="setPlayer(1)">I am player 1</button>
+    </td>
+	<td>
+	 <input type="text" id="year1" size="4" value="" readonly/>
 	</td>
-	</tr><br>
+   </tr><br>
+   <tr>
+    <td>
+	 <button id = "button_player2" onclick="setPlayer(2)">I am player 2</button>
+    </td>
+    <td>
+	 <input type="text" id="year2" size="4" value="" readonly/>
+	</td>
+   </tr>
+  </table>
+  <table>
 	 <tr>
-	 <td>
-	<button id = "button_player2" onclick="setPlayer(2)">I am player 2</button>
-	 </td>
-	 <td>
-	<input type="text" id="year2" size="4" value="" readonly/>
-	</td>
-	</tr>
-	</table>
-	 <table>
-	 <td>
-	 <textarea rows="9" cols="90" id="events" readonly>
-	 </textarea>
-	 </td>
-	 <td>
 	<br>
 	<canvas id = "canvas0"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(00)"></canvas>
 	<canvas id = "canvas1"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(01)"></canvas>
@@ -258,11 +275,22 @@ function setPlayer(id) {
 	<canvas id = "canvas22"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(22)"></canvas>
 	<br>
 	<button onclick="send()" id = "send">Send</button><input type="number" name="ships" id="ships" min="1" max ="999" value="1"/> ships from 
+	<table>
+	<tr>
+	<select id="fromList" onclick = "fromList"></select>
+	</tr>
+	<tr>
 	<input type="text" name="from" id="from" size="9" value="" readonly/> to 
+	</tr>
+	</table>
 	<input type="text" name="to" id="to" size="9" value="" readonly/>
 	<button onclick="cancel()">Cancel</button>
 	<br>
-	</td>
+	</tr>
+   <tr>
+    <textarea rows="9" cols="90" id="events" readonly>
+    </textarea>
+   </tr>
 	</table>
 	</body>
 </html> 

@@ -53,12 +53,12 @@ var Star = function (position) {
 			}
 			// if event is not initial and within event horizon and 
 			// within requested period and visible to current player
-			console.log("Event time " + event.time + " owner " + event.owner + " ships " + event.ships + " " + event.text);
+			console.log("Event time " + event.time + " ownerID " + event.ownerID + " ships " + event.ships + " " + event.text);
 			return ((event.time >= 0) 
 				&& (event.time >= requested_start_time)
 				&& (event.time < event_horizon) 
-				&& event.visibleTo.reduce(function(visible, owner) {
-					return visible || (owner == headquarter.owner);
+				&& event.visibleTo.reduce(function(visible, ownerID) {
+					return visible || (ownerID == headquarter.ownerID);
 				}, false));
 		});
 	}
@@ -82,7 +82,7 @@ var Star = function (position) {
 		context = canvas.getContext("2d");
 
 		// owned stars have a green background
-		if (this.owner == current_player) {
+		if (this.ownerID == current_player) {
 			context.fillStyle="#00FF00";
 		} else {
 			context.fillStyle="#FFFFFF";
@@ -98,12 +98,12 @@ var Star = function (position) {
 		// always start with first letter of star, which is unique
 		var top = "" + this.name.charAt(0);
 		// add secret info
-		if (current_player == this.owner) {
+		if (current_player == this.ownerID) {
 			top = top + this.production;
 		}
 		context.fillText(top, 25 - size/2, 25 - size/40);
 		// add additional secret info in next line
-		if (current_player == this.owner) {
+		if (current_player == this.ownerID) {
 			context.fillText("" + this.ships, 25 - size/4, 25 + size*0.8);
 		}
 	}
@@ -115,7 +115,7 @@ var Star = function (position) {
 		// distance
 		status = status + pad(Position.distanceToText(this.position.distance(center.position)), 6);
 		// growth
-		if (this.owner == current_player) {
+		if (this.ownerID == current_player) {
 			status = status + this.production;
 			status = status + " " + this.ships;
 		}
@@ -146,7 +146,7 @@ var Star = function (position) {
 			return stars[el.index];
 		});
 	}
-	
+
 	// set state of star to current player
 	this.setPlayer = function(player) {
 	}
@@ -168,7 +168,7 @@ Star.starsCreate = function(){
 
 	for(var s = 0;s < stars.length; s++) {
 		stars[s].name = names[s];
-		stars[s].owner = -2;
+		stars[s].ownerID = -2;
 		stars[s].ships = 0;
 		stars[s].production = 2;
 		// all stars for now start neutral
@@ -206,6 +206,13 @@ Star.getStar = function(canvasNumber) {
 	return ret;
 }
 
+// return the star given the name of the star
+Star.getStarByName = function(name) {
+	return stars.filter(function(star) {
+		return (name == star.name);
+	})[0];
+}
+
 // set status star visible to player
 // draw stars with info known to current player
 Star.setCurrentPlayer = function(current_player) {
@@ -227,3 +234,11 @@ Star.visibleEvents = function(player, headquarter, previous, current) {
 	console.log("Star returns " + visible_events.length + " visible events");
 	return visible_events;
 }
+
+// return list of stars controlled by a specific player
+Star.controlledStars = function(playerID) {
+	return stars.filter(function(star) {
+		return playerID == star.ownerID;
+	});
+}
+
