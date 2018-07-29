@@ -209,7 +209,7 @@ Star.getStar = function(canvasNumber) {
 // return the star given the name of the star
 Star.getStarByName = function(name) {
 	return stars.filter(function(star) {
-		return (name == star.name);
+		return (name === star.name);
 	})[0];
 }
 
