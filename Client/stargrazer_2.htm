@@ -143,9 +143,9 @@ function fromList() {
 function fillFromList() {
 	// fill from list with stars controlled by current player
 	var list = document.getElementById("fromList");
-        while(list.options.length > 0) {
-            list.remove(0);
-        }
+    while(list.options.length > 0) {
+        list.remove(0);
+    }
 	Star.controlledStars(currentPlayer).forEach(function(star) {
 		var option = document.createElement("option");
 		option.text = star.name;
@@ -244,62 +244,60 @@ function setPlayer(id) {
 
     </script> 
      </head>  
-     <body>  
-	 <h1>Stargrazer</h1
-	 <table class="w3-table-all" style="width:100%" align="left">
-	 <tr align="left">
-		<th>Player</th>
-		<th>Year</th>
-	 </tr><br>
-	 <tr align="left">
-	 <td>
-	<button id = "button_player1" onclick="setPlayer(1)">I am player 1</button>
-	 </td>
-	 <td>
-	<input type="text" id="year1" size="4" value="" readonly/>
-	</td>
+ <body>  
+  <h1>Stargrazer</h1
+   <table class="w3-table-all" style="width:100%" align="left">
+    <tr align="left">
+     <th>Player</th>
+     <th>Year</th>
 	</tr><br>
-	 <tr>
+    <tr align="left">
 	 <td>
-	<button id = "button_player2" onclick="setPlayer(2)">I am player 2</button>
+	  <button id = "button_player1" onclick="setPlayer(1)">I am player 1</button>
 	 </td>
 	 <td>
-	<input type="text" id="year2" size="4" value="" readonly/>
-	</td>
-	</tr>
-	</table>
-	 <table>
+	  <input type="text" id="year1" size="4" value="" readonly/>
+	 </td>
+	</tr><br>
+	<tr>
 	 <td>
-	 <textarea rows="9" cols="90" id="events" readonly>
-	 </textarea>
+	  <button id = "button_player2" onclick="setPlayer(2)">I am player 2</button>
 	 </td>
 	 <td>
-	<br>
-	<canvas id = "canvas0"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(00)"></canvas>
-	<canvas id = "canvas1"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(01)"></canvas>
-	<canvas id = "canvas2"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(02)"></canvas>
-	<br>
-	<canvas id = "canvas10"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(10)"></canvas>
-	<canvas id = "canvas11"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(11)"></canvas>
-	<canvas id = "canvas12"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(12)"></canvas>
-	<br>
-	<canvas id = "canvas20"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(20)"></canvas>
-	<canvas id = "canvas21"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(21)"></canvas>
-	<canvas id = "canvas22"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(22)"></canvas>
-	<br>
-	<button onclick="send()" id = "send">Send</button><input type="number" name="ships" id="ships" min="1" max ="999" value="1"/> ships from 
-	<table>
-	<tr>
-	<select id="fromList" onclick = "fromList"></select>
+	  <input type="text" id="year2" size="4" value="" readonly/>
+	 </td>
 	</tr>
-	<tr>
-	<input type="text" name="from" id="from" size="9" value="" readonly/> to 
-	</tr>
-	</table>
-	<input type="text" name="to" id="to" size="9" value="" readonly/>
-	<button onclick="cancel()">Cancel</button>
-	<br>
-	</td>
-	</table>
-	</body>
+   </table>
+   <table>
+	 <td>
+	  <br>
+	  <canvas id = "canvas0"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(00)"></canvas>
+	  <canvas id = "canvas1"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(01)"></canvas>
+	  <canvas id = "canvas2"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(02)"></canvas>
+	  <br>
+	  <canvas id = "canvas10"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(10)"></canvas>
+	  <canvas id = "canvas11"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(11)"></canvas>
+	  <canvas id = "canvas12"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(12)"></canvas>
+	  <br>
+	  <canvas id = "canvas20"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(20)"></canvas>
+	  <canvas id = "canvas21"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(21)"></canvas>
+	  <canvas id = "canvas22"  width="50" height="50" style="border:1px solid black" onclick="canvasClicked(22)"></canvas>
+	  <br>
+	  <button onclick="send()" id = "send">Send</button><input type="number" name="ships" id="ships" min="1" max ="999" value="1"/> ships from 
+	   <table>
+	    <tr>
+	     <select id="fromList" onclick = "fromList"></select>
+	    </tr>
+	    <tr>
+	     <input type="text" name="from" id="from" size="9" value="" readonly/> to 
+	    </tr>
+	   </table>
+	  <input type="text" name="to" id="to" size="9" value="" readonly/>
+	  <button onclick="cancel()">Cancel</button>
+	  <br>
+	 </td>
+   </table>
+	  <textarea rows="9" cols="90" id="events" readonly>
+	  </textarea>
+ </body>
 </html> 
