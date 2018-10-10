@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>  
+     <head>  
+	<link rel="stylesheet" type="text/css" href="tictactoe.css"/> 
+	<script type="text/javascript">  
+//Global Variables
+var nr_columns = 3;
+var from = undefined;
+var to = undefined;
+
+// retrieve cookie text if available
+function getCookieValue(id) {
+   // split cookie into elements
+   var elements = document.cookie.split(';');
+   var result = "";
+   for (var i=0; i<elements.length; i++) {
+      var e = elements[i];
+	  // remove leading whitespace
+	  while (e.charAt(0) == ' ') e = e.substring(1);
+	  // check if cookie element starts with id=
+	  if (e.indexOf(id+"=") == 0) {
+	     result = e.substring(id.length+2, e.length);
+	  }
+   }
+   return result;
+}
+
+function expiresString(days){
+   var d = new Date();
+   // expires after one day
+   d.setTime(d.getTime() + days*24*60*60*1000);
+   return "expires=" + d.toUTCString();
+}
+
+function setCookie(id, value) {
+   // delete previous cookie, not really necessary
+   document.cookie=id+"=;"+"path=/"
+			   +";"+expiresString(-1000);
+   // expiration date of 1 day
+   document.cookie=id + "=" + value
+			   +";"+"path=/"
+			   +";"+expiresString(1);
+}
+
+//Instanciate fields
+window.onload=function(){
+	console.log("cookie = " + document.cookie);
+	document.getElementById("player1").value = getCookieValue("player1");
+	document.getElementById("player2").value = getCookieValue("player2");
+    //window.open("./stargrazer_2.htm");
+}
+
+function start_button(){
+   setCookie("player1=", document.getElementById("player1").value);
+   setCookie("player2=", document.getElementById("player2").value);
+//    window.open("./stargrazer_2.htm");
+}
+    </script> 
+     </head>  
+     <body>  
+	 <h1>Stargrazer</h1>
+	 <form type="link" action="stargrazer_2.htm">
+	 <table>
+	 <td>
+	<label>Player 1 </label><input type="text" id="player1" value="Jack"/>
+	<br>
+	<label>Player 2 </label><input type="text" id="player2" value="Jill"/>
+	<br>
+	</td>
+	<tr>
+	<td><input type"submit" value="Start StarGrazer game"/></td>
+	</tr>
+	</table>
+	<button onclick="start_button(2)">Start 2 player game</button>
+	</form>
+	</body>
+</html> 
