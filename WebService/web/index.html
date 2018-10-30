@@ -2,8 +2,137 @@
 <html lang="en">
 <!--
 -->
+<head>  
+<script type="text/javascript">  
+
+  // retrieve cookie text if available
+  function getCookieValue(id) {
+   // split cookie into elements
+   var elements = document.cookie.split(';');
+   var result = "";
+   for (var i=0; i<elements.length; i++) {
+      var e = elements[i];
+      // remove leading whitespace
+      while (e.charAt(0) == ' ') e = e.substring(1);
+      // check if cookie element starts with id=
+      if (e.indexOf(id+"=") == 0) {
+         result = e.substring(id.length+2, e.length);
+      }
+   }
+   return result;
+  }
+
+  window.onload=function(){
+    console.log("cookie = " + document.cookie);
+    document.getElementById("username").value = getCookieValue("username");
+    document.getElementById("gamername").value = getCookieValue("gamername");
+    on_input_username();
+  }
+
+  function expiresString(days){
+   var d = new Date();
+   // expires after one day
+   d.setTime(d.getTime() + days*24*60*60*1000);
+   return "expires=" + d.toUTCString();
+  }
+
+  function setCookie(id, value) {
+   // delete previous cookie, not really necessary
+   document.cookie=id+"=;"+"path=/"
+               +";"+expiresString(-1000);
+   // expiration date of 1 day
+   document.cookie=id + "=" + value
+               +";"+"path=/"
+               +";"+expiresString(1);
+  }
+
+  function sign_up(){
+    url = "http://localhost:7654/StarGrazer/webresources/Gamer/" + document.getElementById("username").value;
+    var request = new Request(url, {
+      method: 'POST',
+      body: document.getElementById("gamername").value,
+      headers: new Headers()
+      }
+    );
+    fetch(request)
+      .then((resp) => resp.text())
+      .then(function(gamername) {
+        document.getElementById("gamername").value = gamername;
+      }
+    );
+    on_input_username();
+  }
+
+  function start_button(){
+   setCookie("username=", document.getElementById("username").value);
+   setCookie("gamername=", document.getElementById("gamername").value);
+  }
+
+  function on_input_username() {
+    document.getElementById("start_button").disabled = true;
+
+    username = document.getElementById("username").value;
+    if ("" == username) {
+      document.getElementById("sign_up").disabled = true;
+      document.getElementById("output").value = "Sign in or sign up";
+    } else {
+      gamername = document.getElementById("gamername").value;
+      if ("" == gamername) {
+        document.getElementById("sign_up").disabled = true;
+      } else {
+        document.getElementById("sign_up").disabled = false;
+      }
+      url = "http://localhost:7654/StarGrazer/webresources/Gamer/" + document.getElementById("username").value;
+      fetch(url)
+        .then((resp) => resp.text())
+        .then(function(gamername) {
+          if ("Unknown user" == gamername) {
+            document.getElementById("output").value = "Sign in or sign up";
+          } else {
+            document.getElementById("output").value = "Hello " + gamername + ", do yoy want to play?";
+            document.getElementById("start_button").disabled = false;
+            setCookie("username=", document.getElementById("username").value);
+          }
+        }
+      );
+    }
+  }
+  function UserAction() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+         if (this.readyState == 4 && this.status == 200) {
+             alert(this.responseText);
+         }
+    };
+    xhttp.open("POST", "Your Rest URL Here", true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send("Your JSON Data Here");
+  }
+  function fetchxxx() {
+    url = "http://localhost:7654/StarGrazer/webresources/Gamer/" + document.getElementById("username").value;
+    var request = new Request(url, {
+      method: 'POST',
+      body: document.getElementById("gamername").value,
+      headers: new Headers()
+      }
+    );
+    fetch(request)
+      .then((resp) => resp.text())
+      .then(function(response) {
+      }
+    );
+  }
+</script> 
+</head>  
 <body>
-<a href="./stargrazer.htm">Stargrazer</a></p>
+    <input type="text" readonly="readonly" id="output" value="Sign in or sign up"></p>
+    <label>User name</label><input type="text" id="username" oninput="on_input_username()" value=""/></p>
+    <label>Gamer name</label><input type="text" id="gamername" oninput="on_input_username()" value=""/>
+    <button onclick="sign_up()" id="sign_up">Sign Up</button></p>
+     <form type="link" action="stargrazer.htm">
+    <button onclick="start_button" id="start_button">Start Stargrazer game</button></p>
 <a href="./notes.html">Notes</a></p>
+<a href="http://nieuwenhovengames.wikidot.com/start">Notes development</a></p>
+    </form>
 </body>
 </html>
