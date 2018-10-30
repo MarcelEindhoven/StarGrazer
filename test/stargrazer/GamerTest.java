@@ -30,7 +30,7 @@ public class GamerTest {
     @Before
     public void setUp() {
         try {
-            Class.forName("StarGrazer.Gamer");
+            Class.forName("stargrazer.Gamer");
             Gamer.s_databasePath = "gamertest.db";
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(GamerTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -42,21 +42,21 @@ public class GamerTest {
         // delete database
         java.io.File databaseFile = new java.io.File(Gamer.s_databasePath);
         boolean deleted = databaseFile.delete();
-        System.out.println("StarGrazer.GamerTest.tearDown() " + deleted);
+        System.out.println("stargrazer.GamerTest.tearDown() " + deleted);
 
     }
 
     //
     @Test
     public void empty() {
-        System.out.println("StarGrazer.GamerTest.empty()");
+        System.out.println("stargrazer.GamerTest.empty()");
         // empty database
         assertEquals(0, Gamer.retrieve().size());
         assertEquals(null, Gamer.retrieve("dummyName"));
     }
     @Test
     public void one() {
-        System.out.println("StarGrazer.GamerTest.one()");
+        System.out.println("stargrazer.GamerTest.one()");
         // empty database
         Gamer g = new Gamer("a", "b");
         g.persist();
@@ -66,7 +66,7 @@ public class GamerTest {
     }
     @Test
     public void update() {
-        System.out.println("StarGrazer.GamerTest.update()");
+        System.out.println("stargrazer.GamerTest.update()");
         // empty database
         Gamer g = new Gamer("a", "b");
         g.persist();
