@@ -16,4 +16,14 @@
         <servlet-name>echo</servlet-name>
         <url-pattern>/echo/*</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>gamer</servlet-name>
+        <url-pattern>/gamer/*</url-pattern>
+        <servlet-class>stargrazer.rest.RESTGamer</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>gamer</servlet-name>
+        <url-pattern>/gamer</url-pattern>
+        <servlet-class>stargrazer.rest.RESTGamer</servlet-class>
+    </servlet-mapping>
 </web-app>
