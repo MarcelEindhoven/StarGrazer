@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<!--
+-->
+<head>  
+</head> 
+<body>
+  <h1>Design</h1>
+    <h2>Design goals</h2>
+      Software components should be portable whenever possible. So independent from a particular cloud, databae or other technology. I have seen so much waste when companies are forced to switch to a new technology while their software was entangled with existing, obolete software, os, external libraries, hardware.</p>
+    <h2>Layering</h2>
+      Front layer is in html with javascript.</p>
+      REST communication has proven itself on the laptop and makes the front-end independent from which cloud/laptop is used.
+      REST is implemented in the server communication layer.</p>
+      Logic layer contains gaming logic and cross-player decisions. For simple CRUD operations the logical layer is skipped.</p>
+      Database layer records all decisions. The database allows players to reenter a game and to replay game-instances for regression testing and trouble shooting.</p>
+    <img src='https://g.gravizo.com/svg?
+/**
+*@opt attributes
+*/
+class Gamers {
+        static public string userName;
+        public string gamerDisplayName;
+}
+'/></p>
+  <h1>To be implemented next. </h1>
+    <img src='https://g.gravizo.com/svg?
+@startuml;
+
+actor User;
+participant "Front End" as A;
+participant "Cloud" as B;
+participant "Database" as C;
+
+User -> A: SignUp;
+activate A;
+
+A -> B: REST Create/update;
+activate B;
+
+B -> C: Create/update SQL;
+activate C;
+
+C --> B: Done;
+deactivate C;
+
+B --> A: Done;
+deactivate B;
+
+A --> User: Done;
+deactivate A;
+
+@enduml'/></p>
+
+</body>
+</html>
