@@ -1,0 +1,8 @@
+{
+    "name": "NodeJsWebApplication",
+    "version": "1.0.0",
+    "keywords": ["game", "functional", "server", "client", "browser"],
+    "author": "Marcel van Nieuwenhoven",
+    "contributors": [],
+    "dependencies": {}
+}
