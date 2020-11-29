@@ -1,9 +1,5 @@
-/nbproject/private/
 *.class
 *.lnk
-/Server/nbproject/private/
-/build/
-/dist/
-/WebService/build/
-/WebService/dist/
-/NodeJsWebApplication/nbproject/private/
+nbproject/private/
+/angular/Angular-GettingStarted-master/APM-Start/nbproject/private/
+/angular/game-crud/nbproject/private/

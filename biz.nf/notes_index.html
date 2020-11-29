@@ -5,12 +5,26 @@
 <head>  
 </head> 
 <body>
+  <h1>System context</h1>
+  A player starts or joins a game and submits moves. The game keeps the player updated with real-time events.</p>
+  <a href="https://app.creately.com/diagram/g9prvhofcB1/edit" >System context </a>
   <h1>Design</h1>
     <h2>Design goals</h2>
-      Software components should be portable whenever possible. So independent from a particular cloud, databae or other technology. I have seen so much waste when companies are forced to switch to a new technology while their software was entangled with existing, obolete software, os, external libraries, hardware.</p>
+	  <h3>Portability</h3>
+      Software components should be portable whenever possible. So independent from a particular cloud, databae or other technology. 
+	  Much waste occurs when companies are forced to switch to a new technology while their software was entangled with existing, obolete software, os, external libraries, hardware.</p>
+	  <h2>Frameworks</h2>
+		<h3> NodeJS plus JavaScript </h3>
+		The most simple server side implementation is used for user CRUD
+		<h3> HTML plus JavaScript </h3>
+		The most simple client side implementation is used for user CRUD.
+		<h3> Express </h3>
+		Also based on NodeJS plus JavaScript, Express makes implementation of game CRUD simpler by taking care of URL routing and parameter parsing.
+		<h3> Angular </h3>
+		To be implemented for client side game CRUD.
     <h2>Layering</h2>
-      Front layer is in html with javascript.</p>
-      REST communication has proven itself on the laptop and makes the front-end independent from which cloud/laptop is used.
+      Front layer is initially in html with javascript. Later frameworks will be added. In this way both local level and high level experience is gained.</p>
+      REST communication makes the front-end less dependent on which server is used.
       REST is implemented in the server communication layer.</p>
       Logic layer contains gaming logic and cross-player decisions. For simple CRUD operations the logical layer is skipped.</p>
       Database layer records all decisions. The database allows players to reenter a game and to replay game-instances for regression testing and trouble shooting.</p>
@@ -18,12 +32,12 @@
 /**
 *@opt attributes
 */
-class Gamers {
-        static public string userName;
-        public string gamerDisplayName;
+class User {
+        static public string id;
+        public string name;
 }
 '/></p>
-  <h1>To be implemented next. </h1>
+  <h1>User signup. </h1>
     <img src='https://g.gravizo.com/svg?
 @startuml;
 
@@ -38,7 +52,7 @@ activate A;
 A -> B: REST Create/update;
 activate B;
 
-B -> C: Create/update SQL;
+B -> C: Create/update user;
 activate C;
 
 C --> B: Done;
