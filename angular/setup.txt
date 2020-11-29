@@ -1,0 +1,6 @@
+npm install -g typescript
+npm install -g angular
+npm install -g @angular/cli
+ng new game-crud
+cd game-crud
+ng build game-crud
